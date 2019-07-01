@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using WebApiMassTransit.Models;
 
 namespace WebApiMassTransit
@@ -39,10 +40,10 @@ namespace WebApiMassTransit
             {
                 var host = cfg.Host("localhost", "/", h => { });
 
-                //cfg.UseExtensionsLogging(provider.GetService<ILoggerFactory>());
+                cfg.UseExtensionsLogging(provider.GetService<ILoggerFactory>());
                 cfg.UseJsonSerializer();
 
-                cfg.ReceiveEndpoint(host, "teste", e =>
+                cfg.ReceiveEndpoint(host, "teste2", e =>
                 {
                     e.PrefetchCount = 16;
                     e.UseMessageRetry(x => x.Interval(2, 100));

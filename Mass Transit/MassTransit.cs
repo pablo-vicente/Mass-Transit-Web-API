@@ -11,30 +11,33 @@ namespace Mass_Transit
             var busControl = ConfigureBus();
             busControl.Start();
 
-            //string text = "Hello Mass+Transit";
+            string text2 = "Hello Mass+Transit";
+            int i = 0;
             while(true)
             {
                 Console.WriteLine("Enter your message ou quit to exit");
-                string text = Console.ReadLine();
+                string text = $"{text2} Number:{i}";
+                Console.WriteLine(text);
 
                 if (text.Equals("exit"))
                 {
                     break;
                 }
-                busControl.Publish<MessageText>(new
+                busControl.Send<MessageText>(new
                 {
-                    Text = text
+                    MessageText = text
                 });
-                //busControl.CreateRequestClient<>
+                i += 1;
             }
             
             busControl.Stop();
         }
+
         static IBusControl ConfigureBus()
         {
             var busControl = Bus.Factory.CreateUsingRabbitMq(sbc =>
             {
-                //sbc.UseJsonSerializer();
+                sbc.UseJsonSerializer();
                 var host = sbc.Host(new Uri("rabbitmq://localhost/"), h =>
                 {
                     h.Username("guest");
@@ -42,10 +45,10 @@ namespace Mass_Transit
                 });
 
                                                 // FILA QUE CONSUMER ESCUTA
-                //sbc.ReceiveEndpoint(host, "teste", e =>
-                //{
-                //    e.Consumer<ConsumerMessage>();
-                //});
+                sbc.ReceiveEndpoint(host, "testeWEBAPI", e =>
+                {
+                    //e.Consumer<ConsumerMessage>();
+                });
             });
             return busControl;
         }
