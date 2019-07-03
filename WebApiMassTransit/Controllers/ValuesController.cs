@@ -12,29 +12,29 @@ namespace WebApiMassTransit.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
-        private readonly IRequestClient<MessageText> _requestClient;
+        //private readonly IRequestClient<MessageText> _requestClient;
 
-        public ValuesController(IRequestClient<MessageText> requestClient)
-        {
-            _requestClient = requestClient;
-        }
+        //public ValuesController(IRequestClient<MessageText> requestClient)
+        //{
+        //    _requestClient = requestClient;
+        //}
 
         // GET api/values
         [HttpGet]
-        //public ActionResult<IEnumerable<string>> Get()
-        public async Task<IActionResult> Get(CancellationToken cancellationToken)
+        public ActionResult<IEnumerable<string>> Get()
+        //public async Task<IActionResult> Get(CancellationToken cancellationToken)
         {
-            //return new string[] { "value1", "value2" };
-            try
-            {
-                var request = _requestClient.Create(new { MessageText = "Hello, World." }, cancellationToken);
-                var response = await request.GetResponse<MessageText>();
-                return Content($"{response.Message.Text}");//, //MessageId: {response.MessageId:D}");
-            }
-            catch (RequestTimeoutException exception)
-            {
-                return StatusCode((int)HttpStatusCode.RequestTimeout);
-            }
+            return new string[] { "value1", "value2" };
+            //try
+            //{
+            //    var request = _requestClient.Create(new { MessageText = "Hello, World." }, cancellationToken);
+            //    var response = await request.GetResponse<MessageText>();
+            //    return Content($"{response.Message.Text}");//, //MessageId: {response.MessageId:D}");
+            //}
+            //catch (RequestTimeoutException exception)
+            //{
+            //    return StatusCode((int)HttpStatusCode.RequestTimeout);
+            //}
         }
 
         // GET api/values/5

@@ -1,4 +1,5 @@
-﻿using GreenPipes;
+﻿using Contract;
+using GreenPipes;
 using MassTransit;
 using MassTransit.ExtensionsDependencyInjectionIntegration;
 using Microsoft.AspNetCore.Builder;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using System;
 using WebApiMassTransit.Models;
 
 namespace WebApiMassTransit
@@ -26,7 +27,6 @@ namespace WebApiMassTransit
         {
 
             //services.AddScoped<IService, Service>();
-
             services.AddScoped<Consumer>();
 
             services.AddMassTransit(x =>
@@ -38,17 +38,23 @@ namespace WebApiMassTransit
 
             services.AddSingleton(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
             {
-                var host = cfg.Host("localhost", "/", h => { });
-
-                cfg.UseExtensionsLogging(provider.GetService<ILoggerFactory>());
-                cfg.UseJsonSerializer();
-
-                cfg.ReceiveEndpoint(host, "teste2", e =>
+                var host = cfg.Host(new Uri("rabbitmq://localhost/"), h =>
                 {
-                    e.PrefetchCount = 16;
-                    e.UseMessageRetry(x => x.Interval(2, 100));
+                    //h.Username("guest");
+                    //h.Password("guest");
+                });
+
+                //cfg.UseExtensionsLogging(provider.GetService<ILoggerFactory>());
+                //cfg.UseJsonSerializer();
+
+                cfg.ReceiveEndpoint(host, "SalveFileCommand", e =>
+                {
+                    //e.Bind("SalveFileCommand");
+                    //e.Bind<IMessageText>();
+                    e.PrefetchCount = 1;
+                    //e.UseMessageRetry(x => x.Interval(2, 100));
                     e.Consumer<Consumer>(provider);
-                    EndpointConvention.Map<MessageText>(e.InputAddress);
+                    EndpointConvention.Map<IMessageText>(e.InputAddress);
                 });
             }));
 
@@ -56,7 +62,7 @@ namespace WebApiMassTransit
             services.AddSingleton<ISendEndpointProvider>(provider => provider.GetRequiredService<IBusControl>());
             services.AddSingleton<IBus>(provider => provider.GetRequiredService<IBusControl>());
 
-            services.AddScoped(provider => provider.GetRequiredService<IBus>().CreateRequestClient<MessageText>());
+            services.AddScoped(provider => provider.GetRequiredService<IBus>().CreateRequestClient<IMessageText>());
 
             services.AddSingleton<IHostedService, BusService>();
 

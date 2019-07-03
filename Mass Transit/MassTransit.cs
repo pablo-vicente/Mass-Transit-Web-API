@@ -1,5 +1,7 @@
-﻿using MassTransit;
+﻿using Contract;
+using MassTransit;
 using System;
+using System.IO;
 
 namespace Mass_Transit
 {
@@ -8,49 +10,40 @@ namespace Mass_Transit
         public static void Main()
         {
 
-            var busControl = ConfigureBus();
-            busControl.Start();
+            var bus = ConfigureBus();
+            bus.Start();
 
-            string text2 = "Hello Mass+Transit";
             int i = 0;
-            while(true)
+            while(i<1000000)
             {
-                Console.WriteLine("Enter your message ou quit to exit");
-                string text = $"{text2} Number:{i}";
-                Console.WriteLine(text);
-
-                if (text.Equals("exit"))
-                {
-                    break;
-                }
-                busControl.Send<MessageText>(new
-                {
-                    MessageText = text
-                });
+                var message = new MessageTextCommand() { Text = $"Hi {i}" };
+                bus.Publish<IMessageText>(message);
+                Console.WriteLine(i);
                 i += 1;
             }
-            
-            busControl.Stop();
+
+            bus.Stop();
         }
 
         static IBusControl ConfigureBus()
         {
-            var busControl = Bus.Factory.CreateUsingRabbitMq(sbc =>
+                      
+            var bus = Bus.Factory.CreateUsingRabbitMq(sbc =>
             {
-                sbc.UseJsonSerializer();
-                var host = sbc.Host(new Uri("rabbitmq://localhost/"), h =>
+                var host = sbc.Host(new Uri("rabbitmq://localhost/" ), h =>
                 {
                     h.Username("guest");
                     h.Password("guest");
                 });
 
-                                                // FILA QUE CONSUMER ESCUTA
-                sbc.ReceiveEndpoint(host, "testeWEBAPI", e =>
-                {
-                    //e.Consumer<ConsumerMessage>();
-                });
+                //sbc.ReceiveEndpoint(host, "textFile", ep =>
+                //{
+                //    ep.PrefetchCount = 1;
+                //    ep.Consumer<ConsumerMessage>();
+                //});
             });
-            return busControl;
+            
+            return bus;
         }
     }
 }
