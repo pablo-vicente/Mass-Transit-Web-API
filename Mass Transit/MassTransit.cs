@@ -2,6 +2,7 @@
 using MassTransit;
 using System;
 using System.IO;
+using System.Threading;
 
 namespace Mass_Transit
 {
@@ -13,16 +14,21 @@ namespace Mass_Transit
             var bus = ConfigureBus();
             bus.Start();
 
-            int i = 0;
-            while(i<1000000)
+            long i = 0;
+            while(i<3000)
             {
-                var message = new MessageTextCommand() { Text = $"Hi {i}" };
-                bus.Publish<IMessageText>(message);
-                Console.WriteLine(i);
+                System.Console.WriteLine($"Salve in file: {i}");
+                bus.Publish<ISaveMessageCommand>(new 
+                { 
+                    id = i,
+                    text = $"Hello World, {i}"
+                });
                 i += 1;
+                Thread.Sleep(150);
+                System.Console.WriteLine("Waint 150....n");
             }
 
-            bus.Stop();
+            //bus.Stop();
         }
 
         static IBusControl ConfigureBus()
@@ -36,11 +42,11 @@ namespace Mass_Transit
                     h.Password("guest");
                 });
 
-                //sbc.ReceiveEndpoint(host, "textFile", ep =>
-                //{
-                //    ep.PrefetchCount = 1;
-                //    ep.Consumer<ConsumerMessage>();
-                //});
+                sbc.ReceiveEndpoint(host, "ISaveConfirmedEvent", ep =>
+                {
+                    ep.PrefetchCount = 1;
+                    ep.Consumer<ConsumerConfimedEvent>();
+                });
             });
             
             return bus;

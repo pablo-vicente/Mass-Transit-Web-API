@@ -27,12 +27,12 @@ namespace WebApiMassTransit
         {
 
             //services.AddScoped<IService, Service>();
-            services.AddScoped<Consumer>();
+            services.AddScoped<ConsumerSaveMessageCommand>();
 
             services.AddMassTransit(x =>
             {
                 // add the consumer to the container
-                x.AddConsumer<Consumer>();
+                x.AddConsumer<ConsumerSaveMessageCommand>();
 
             });
 
@@ -47,14 +47,14 @@ namespace WebApiMassTransit
                 //cfg.UseExtensionsLogging(provider.GetService<ILoggerFactory>());
                 //cfg.UseJsonSerializer();
 
-                cfg.ReceiveEndpoint(host, "SalveFileCommand", e =>
+                cfg.ReceiveEndpoint(host, "ISaveMessageCommand", e =>
                 {
                     //e.Bind("SalveFileCommand");
                     //e.Bind<IMessageText>();
                     e.PrefetchCount = 1;
                     //e.UseMessageRetry(x => x.Interval(2, 100));
-                    e.Consumer<Consumer>(provider);
-                    EndpointConvention.Map<IMessageText>(e.InputAddress);
+                    e.Consumer<ConsumerSaveMessageCommand>(provider);
+                    EndpointConvention.Map<ISaveMessageCommand>(e.InputAddress);
                 });
             }));
 
@@ -62,7 +62,7 @@ namespace WebApiMassTransit
             services.AddSingleton<ISendEndpointProvider>(provider => provider.GetRequiredService<IBusControl>());
             services.AddSingleton<IBus>(provider => provider.GetRequiredService<IBusControl>());
 
-            services.AddScoped(provider => provider.GetRequiredService<IBus>().CreateRequestClient<IMessageText>());
+            services.AddScoped(provider => provider.GetRequiredService<IBus>().CreateRequestClient<ISaveMessageCommand>());
 
             services.AddSingleton<IHostedService, BusService>();
 
