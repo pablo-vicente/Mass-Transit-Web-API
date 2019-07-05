@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Mass Transit": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

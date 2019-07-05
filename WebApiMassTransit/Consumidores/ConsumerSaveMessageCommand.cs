@@ -26,13 +26,13 @@ namespace WebApiMassTransit.Models
             //    Text = $"Received: {context.Message.Text}"
             //});
 
-            string pathfile = @"C:\Users\Pablo\source\repos\Mass Transit WEB API\WebApiMassTransit\files";
+            string pathfile = @"/app/files";
             Directory.CreateDirectory(pathfile);
 
             pathfile = Path.Combine(pathfile, "consumer.txt");
 
             StreamWriter file = new StreamWriter(pathfile, true);
-            await file.WriteLineAsync($"Message ID: {context.Message.id} Received: {context.Message.text}");
+            await file.WriteLineAsync($"Message ID: {context.Message.id} Received: {context.Message.text}\n\r");
             file.Close();
 
             var endpoint = await _BusControl.GetSendEndpoint(new Uri("rabbitmq://localhost/ISaveConfirmedEvent"));

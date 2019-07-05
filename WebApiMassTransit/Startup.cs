@@ -1,9 +1,8 @@
-﻿using Contract;
+﻿
+using Contract;
 using GreenPipes;
 using MassTransit;
-using MassTransit.ExtensionsDependencyInjectionIntegration;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,7 +24,6 @@ namespace WebApiMassTransit
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             //services.AddScoped<IService, Service>();
             services.AddScoped<ConsumerSaveMessageCommand>();
 
@@ -38,10 +36,10 @@ namespace WebApiMassTransit
 
             services.AddSingleton(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
             {
-                var host = cfg.Host(new Uri("rabbitmq://localhost/"), h =>
+                var host = cfg.Host(new Uri("rabbitmq://rabbitmq3-management/"), h =>
                 {
-                    //h.Username("guest");
-                    //h.Password("guest");
+                    h.Username("NORUSDEV");
+                    h.Password("teste1234");
                 });
 
                 //cfg.UseExtensionsLogging(provider.GetService<ILoggerFactory>());
@@ -52,7 +50,7 @@ namespace WebApiMassTransit
                     //e.Bind("SalveFileCommand");
                     //e.Bind<IMessageText>();
                     e.PrefetchCount = 1;
-                    //e.UseMessageRetry(x => x.Interval(2, 100));
+                    e.UseMessageRetry(x => x.Interval(2, 2));
                     e.Consumer<ConsumerSaveMessageCommand>(provider);
                     EndpointConvention.Map<ISaveMessageCommand>(e.InputAddress);
                 });

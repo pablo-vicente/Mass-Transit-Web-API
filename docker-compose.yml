@@ -1,0 +1,43 @@
+version: '3.4'
+
+networks:
+  backend:
+
+services:
+  masstransit:
+    container_name: masstransit
+    image: ${DOCKER_REGISTRY-}masstransit
+    build:
+      context: .
+      dockerfile: Mass Transit/Dockerfile
+    networks:
+      - backend
+    depends_on:
+      - rabbitmq3-management
+    volumes:
+      - ./Mass Transit/files:/app/files
+    
+  webapimasstransit:
+    container_name: web_api
+    image: ${DOCKER_REGISTRY-}webapimasstransit
+    build:
+      context: .
+      dockerfile: WebApiMassTransit/Dockerfile
+    networks:
+      - backend
+    depends_on:
+      - rabbitmq3-management
+    volumes:
+      - ./WebApiMassTransit/files:/app/files
+
+  rabbitmq3-management:
+    container_name: rabbitmq3-management
+    image: rabbitmq:3-management
+    environment:
+      RABBITMQ_DEFAULT_USER: "NORUSDEV"
+      RABBITMQ_DEFAULT_PASS: "teste1234"
+    networks:
+      - backend
+    ports:
+      - "15672:15672"
+      - "5672:5672"

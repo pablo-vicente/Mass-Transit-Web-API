@@ -1,7 +1,7 @@
 ﻿using Contract;
+using GreenPipes;
 using MassTransit;
 using System;
-using System.IO;
 using System.Threading;
 
 namespace Mass_Transit
@@ -15,40 +15,41 @@ namespace Mass_Transit
             bus.Start();
 
             long i = 0;
-            while(i<3000)
+            while (i <= 3000)
             {
-                System.Console.WriteLine($"Salve in file: {i}");
-                bus.Publish<ISaveMessageCommand>(new 
-                { 
+                //System.Console.WriteLine($"Salve in file: {i}");
+                bus.Publish<ISaveMessageCommand>(new
+                {
                     id = i,
                     text = $"Hello World, {i}"
                 });
                 i += 1;
                 Thread.Sleep(150);
-                System.Console.WriteLine("Waint 150....n");
+                //System.Console.WriteLine("Waint 150....n");
             }
 
-            //bus.Stop();
+            bus.Stop();
         }
 
         static IBusControl ConfigureBus()
         {
-                      
+
             var bus = Bus.Factory.CreateUsingRabbitMq(sbc =>
             {
-                var host = sbc.Host(new Uri("rabbitmq://localhost/" ), h =>
+                var host = sbc.Host(new Uri("rabbitmq://rabbitmq3-management/"), h =>
                 {
-                    h.Username("guest");
-                    h.Password("guest");
+                    h.Username("NORUSDEV");
+                    h.Password("teste1234");
                 });
 
                 sbc.ReceiveEndpoint(host, "ISaveConfirmedEvent", ep =>
                 {
                     ep.PrefetchCount = 1;
+                    //ep.UseMessageRetry(x => x.Interval(2, 100));
                     ep.Consumer<ConsumerConfimedEvent>();
                 });
             });
-            
+
             return bus;
         }
     }

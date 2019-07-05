@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mass Transit", "Mass Transi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiMassTransit", "WebApiMassTransit\WebApiMassTransit.csproj", "{920D41F9-61D7-473E-AFC5-84E7176E6099}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{672E6AFB-AB8F-4BFE-A87D-E221A93A729D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{920D41F9-61D7-473E-AFC5-84E7176E6099}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{920D41F9-61D7-473E-AFC5-84E7176E6099}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{920D41F9-61D7-473E-AFC5-84E7176E6099}.Release|Any CPU.Build.0 = Release|Any CPU
+		{672E6AFB-AB8F-4BFE-A87D-E221A93A729D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{672E6AFB-AB8F-4BFE-A87D-E221A93A729D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{672E6AFB-AB8F-4BFE-A87D-E221A93A729D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{672E6AFB-AB8F-4BFE-A87D-E221A93A729D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
