@@ -5,7 +5,7 @@ networks:
 
 services:
   masstransit:
-    container_name: masstransit
+    container_name: mass
     image: ${DOCKER_REGISTRY-}masstransit
     build:
       context: .

@@ -50,7 +50,7 @@ namespace WebApiMassTransit
                     //e.Bind("SalveFileCommand");
                     //e.Bind<IMessageText>();
                     e.PrefetchCount = 1;
-                    e.UseMessageRetry(x => x.Interval(2, 2));
+                    //e.UseMessageRetry(x => x.Interval(1, 1));
                     e.Consumer<ConsumerSaveMessageCommand>(provider);
                     EndpointConvention.Map<ISaveMessageCommand>(e.InputAddress);
                 });
