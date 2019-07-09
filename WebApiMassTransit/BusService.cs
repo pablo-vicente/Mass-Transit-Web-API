@@ -26,11 +26,5 @@ namespace WebApiMassTransit
         {
             return _busControl.StopAsync(cancellationToken);
         }
-
-        public async Task GetSendEndpointAsync(Uri uri)
-        {
-            await _busControl.GetSendEndpoint(new Uri("rabbitmq://localhost/ISaveConfirmedEvent"));
-        }
-
     }
 }
